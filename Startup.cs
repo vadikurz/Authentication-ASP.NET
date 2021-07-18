@@ -1,13 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using WebApplication.Data.Entities;
@@ -18,44 +13,44 @@ namespace WebApplication
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        IConfiguration Configuration { get; }
+
         public Startup (IConfiguration configuration)
         {
             Configuration = configuration;
         }
-        IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("Connection"));
-            }).AddIdentity<User, Role>();
-
-            services.AddAuthentication("Cookie")
-                .AddCookie(("Cookie"), config =>
                 {
-                    config.LoginPath = Routes.Account.Login;
-                });
+                    options.UseSqlServer(Configuration.GetConnectionString(ApplicationConstants.ConnectionString));
+                }).AddIdentity<User, Role>(config=>
+                {
+                    config.Password.RequireDigit = false;
+                    config.Password.RequireLowercase = false;
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
                 
             services.AddAuthorization();
             services.ConfigureApplicationCookie(options =>
             {
                 options.ReturnUrlParameter = ApplicationCookies.ReturnUrlParameter;
-                options.LoginPath = Routes.Account.Login;
+                options.LoginPath = Routes.Account.SignIn;
                 options.AccessDeniedPath = Routes.Account.AccessDenied;
             });
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

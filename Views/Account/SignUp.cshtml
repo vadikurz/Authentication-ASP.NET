@@ -1,0 +1,31 @@
+﻿@using WebApplication.Utils.Constants
+@model WebApplication.Models.SignUpViewModel
+@{ var query = new Dictionary<string, string>()
+    {
+        [ApplicationCookies.ReturnUrlParameter] = Context.Request.Query[ApplicationCookies.ReturnUrlParameter]
+    };
+}
+
+<h1>Registration</h1>
+<a asp-controller="Home" asp-action="Index">Home</a>
+<a asp-controller="Account" asp-action="SignIn">Sign in</a>
+<form asp-controller="Account" asp-action="SignUp" method="post" asp-all-route-data=@query>
+    <div>
+        <label>UserName</label>
+        <input asp-for="UserName" />
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div>
+        <label>Password</label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label>Confirmed password</label>
+        <input asp-for="ConfirmedPassword" />
+        <span asp-validation-for="ConfirmedPassword"></span>
+    </div>
+    <p>
+        <button type="submit">Sign up</button>
+    </p>
+</form>

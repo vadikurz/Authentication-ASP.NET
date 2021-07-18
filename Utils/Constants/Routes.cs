@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipelines;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebApplication.Utils.Constants
+﻿namespace WebApplication.Utils.Constants
 {
     public static class Routes
     {
@@ -22,9 +16,10 @@ namespace WebApplication.Utils.Constants
         public static class Account
         {
             public const string Index = "/account/index";
-            public const string Login = "/account/log-in";
+            public const string SignIn = "/account/log-in";
             public const string AccessDenied = "/account/access-denied";
-            public const string Logout = "account/log-out";
+            public const string SignOut = "/account/log-out";
+            public const string SignUp = "/account/sign-up";
         }
     }
 }

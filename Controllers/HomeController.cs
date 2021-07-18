@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication.Utils.Constants;
 
 namespace WebApplication.Controllers
@@ -16,6 +11,5 @@ namespace WebApplication.Controllers
         {
             return View();
         }
-        
     }
 }

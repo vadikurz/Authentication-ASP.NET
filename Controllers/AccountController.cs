@@ -1,66 +1,114 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+using WebApplication.Data.Entities;
 using WebApplication.Utils.Constants;
 using WebApplication.Models;
 
 namespace WebApplication.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
-        [Route(Routes.Account.Index)]
+        private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
+
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+        }
+        [Authorize]
+        [HttpGet(Routes.Account.Index)]
         public IActionResult Index()
         {
             return View();
         }
-        [Route(Routes.Account.Login)]
-        [AllowAnonymous]
-        public IActionResult Login()
+
+        [HttpGet(Routes.Account.SignUp)]
+        public IActionResult SignUp()
         {
             return View();
         }
-        [HttpPost(Routes.Account.Login)]
-        [AllowAnonymous]
-        public async Task<IActionResult> LoginAsync(LoginViewModel model, [FromQuery] string returnUrl)
+
+        [HttpPost(Routes.Account.SignUp)]
+        public async Task<IActionResult> SignUpAsync([FromForm]SignUpViewModel model, [FromQuery(Name = ApplicationCookies.ReturnUrlParameter)]string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var claims = new List<Claim>
+
+            if (model.Password != model.ConfirmedPassword)
             {
-                new ("Demo", "Value")
+                ModelState.AddModelError("Password", "incorrectly");
+                return View(model);
+            }
+
+            User user = new User
+            {
+                UserName = model.UserName,
+                RegistrationDate = DateTime.Now
             };
-            var claimIdentity = new ClaimsIdentity(claims,"cookie");
-            var claimPrincipal = new ClaimsPrincipal(claimIdentity);
-            await HttpContext.SignInAsync("Cookie", claimPrincipal);
-            return RedirectToUrlOrHomePage(returnUrl);
+            var result = userManager.CreateAsync(user, model.Password).GetAwaiter().GetResult();
+            if (result.Succeeded)
+            {
+                await signInManager.SignInAsync(user, false);
+                return Redirect(returnUrl);
+            }
+            return View(model);
         }
-        private IActionResult RedirectToUrlOrHomePage(string url) => IsValidUrl(url) ? Redirect(url) : ReturnToHomepage() ;
-        private bool IsValidUrl(string url) => !string.IsNullOrWhiteSpace(url) && Url.IsLocalUrl(url);
 
-        private IActionResult ReturnToHomepage() =>
-            RedirectToAction("Index","Home");
-
-        [Route(Routes.Account.Logout)]
-        public IActionResult LogOff()
+        [HttpGet(Routes.Account.SignIn)]
+        public IActionResult Signin()
         {
-            HttpContext.SignOutAsync("Cookie");
+            return View();
+        }
+
+        [HttpPost(Routes.Account.SignIn)]
+        public async Task<IActionResult> SignInAsync([FromForm]LoginViewModel model, [FromQuery(Name = ApplicationCookies.ReturnUrlParameter)] string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.FindByNameAsync(model.UserName);
+            if (user == null)
+            {
+                ModelState.AddModelError("","username not found");
+                return View(model);
+            }
+
+            var result = await signInManager.PasswordSignInAsync(user,model.Password,false,false);
+            if (result.Succeeded)
+            {
+                return redirectToUrlOrDefault(returnUrl);
+            }
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost(Routes.Account.SignOut)]
+        public async Task<IActionResult> SignOutAsync()
+        {
+            await signInManager.SignOutAsync();
             return Redirect(Routes.Home.Index);
         }
 
+        [Authorize]
         public IActionResult AccessDenied()
         {
             return View();
         }
-        
+
+        private IActionResult redirectToUrlOrDefault(string url) =>
+            IsValidUrl(url) ? Redirect(url) : ReturnToDefault();
+
+        private bool IsValidUrl(string url) => Url.IsLocalUrl(url);
+
+        private IActionResult ReturnToDefault() =>
+            Redirect(Routes.Default);
     }
 }

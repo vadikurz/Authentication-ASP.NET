@@ -39,23 +39,17 @@ namespace WebApplication.Controllers
             {
                 return View(model);
             }
-
-            if (model.Password != model.ConfirmedPassword)
-            {
-                ModelState.AddModelError("Password", "incorrectly");
-                return View(model);
-            }
-
             User user = new User
             {
                 UserName = model.UserName,
-                RegistrationDate = DateTime.Now
+                RegistrationDate = DateTime.Now,
+                LastAuthorization = DateTime.Now
             };
-            var result = userManager.CreateAsync(user, model.Password).GetAwaiter().GetResult();
+            var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                await signInManager.SignInAsync(user, false);
-                return Redirect(returnUrl);
+                await signInManager.SignInAsync(user, isPersistent:false);
+                return RedirectToUrlOrDefault(returnUrl);
             }
             return View(model);
         }
@@ -67,7 +61,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost(Routes.Account.SignIn)]
-        public async Task<IActionResult> SignInAsync([FromForm]LoginViewModel model, [FromQuery(Name = ApplicationCookies.ReturnUrlParameter)] string returnUrl)
+        public async Task<IActionResult> SignInAsync([FromForm]SignInViewModel model, [FromQuery(Name = ApplicationCookies.ReturnUrlParameter)] string returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -77,14 +71,19 @@ namespace WebApplication.Controllers
             var user = await userManager.FindByNameAsync(model.UserName);
             if (user == null)
             {
-                ModelState.AddModelError("","username not found");
+                ModelState.AddModelError("","Username not found");
                 return View(model);
             }
 
-            var result = await signInManager.PasswordSignInAsync(user,model.Password,false,false);
+            var result = await signInManager.PasswordSignInAsync(user, model.Password, isPersistent:false,lockoutOnFailure:false);
             if (result.Succeeded)
             {
-                return redirectToUrlOrDefault(returnUrl);
+                user.LastAuthorization = DateTime.Now;
+                var editResult = await userManager.UpdateAsync(user);
+                if (editResult.Succeeded)
+                {
+                    return RedirectToUrlOrDefault(returnUrl);
+                }
             }
             return View(model);
         }
@@ -103,11 +102,8 @@ namespace WebApplication.Controllers
             return View();
         }
 
-        private IActionResult redirectToUrlOrDefault(string url) =>
-            IsValidUrl(url) ? Redirect(url) : ReturnToDefault();
-
-        private bool IsValidUrl(string url) => Url.IsLocalUrl(url);
-
+        private IActionResult RedirectToUrlOrDefault(string url) =>
+            Url.IsLocalUrl(url)? Redirect(url) : ReturnToDefault();
         private IActionResult ReturnToDefault() =>
             Redirect(Routes.Default);
     }

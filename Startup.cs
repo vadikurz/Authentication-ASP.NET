@@ -24,8 +24,9 @@ namespace WebApplication
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 {
-                    options.UseSqlServer(Configuration.GetConnectionString(ApplicationConstants.ConnectionString));
-                }).AddIdentity<User, Role>(config=>
+                    options.UseSqlServer(Configuration.GetConnectionString(DataBase.ConnectionString));
+                })
+                .AddIdentity<User, Role>(config=>
                 {
                     config.Password.RequireDigit = false;
                     config.Password.RequireLowercase = false;

@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using WebApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using WebApplication.Data.Entities;
+using WebApplication.Mappers;
+using WebApplication.Models;
 using WebApplication.Utils.Constants;
 
 
@@ -26,7 +28,7 @@ namespace WebApplication
                 {
                     options.UseSqlServer(Configuration.GetConnectionString(DataBase.ConnectionString));
                 })
-                .AddIdentity<User, Role>(config=>
+                .AddIdentity<User, Role>(config =>
                 {
                     config.Password.RequireDigit = false;
                     config.Password.RequireLowercase = false;
@@ -34,8 +36,10 @@ namespace WebApplication
                     config.Password.RequireUppercase = false;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            services.AddSingleton<IMapper<User, SelectableUserViewModel>, UserEntityToSelectableUserViewModelMapper>();
                 
+
+
             services.AddAuthorization();
             services.ConfigureApplicationCookie(options =>
             {
@@ -52,6 +56,8 @@ namespace WebApplication
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

@@ -1,7 +1,31 @@
-﻿<h1>Admin</h1>
-<a asp-controller="Home" asp-action="Index">Home</a>
+﻿@model IList<WebApplication.Models.SelectableUserViewModel> 
+
+<h1>Admin</h1>
+<a asp-controller="Home" asp-action="Index" class="btn btn-sm btn-danger">Home</a>
 <form asp-controller="Account" asp-action="SignOut" >
     <p>
         <button type ="submit">Log out</button>
     </p>
+</form>
+<form method="post">
+    <table class="table">
+        <tr><th>Username</th><th>Email</th><th>Id</th><th>Registration Date</th><th>Last login date</th></tr>
+        @for(int i = 0; i < Model.Count;i++)
+        {
+            <tr>
+                <td>@Model[i].UserName</td>
+                <td>@Model[i].Email</td>
+                <td>
+                    <input type="hidden" asp-for="@Model[i].Id"/>
+                    @Model[i].Id
+                </td>
+                <td>@Model[i].RegistrationDate</td>
+                <td>@Model[i].LastAuthorization</td>
+                <td>
+                    <input asp-for="@Model[i].IsSelected" />
+                </td>
+            </tr>
+        }
+    </table>
+    <button asp-controller="Admin" asp-action="DeleteUser" type="submit" class="btn btn-sm btn-danger">Delete</button>
 </form>

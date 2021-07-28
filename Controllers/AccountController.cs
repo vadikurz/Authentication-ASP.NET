@@ -42,13 +42,14 @@ namespace WebApplication.Controllers
             User user = new User
             {
                 UserName = model.UserName,
+                Email = model.Email,
                 RegistrationDate = DateTime.Now,
                 LastAuthorization = DateTime.Now
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                await signInManager.SignInAsync(user, isPersistent:false);
+                await signInManager.SignInAsync(user, isPersistent: true);
                 return RedirectToUrlOrDefault(returnUrl);
             }
             return View(model);
@@ -71,11 +72,11 @@ namespace WebApplication.Controllers
             var user = await userManager.FindByNameAsync(model.UserName);
             if (user == null)
             {
-                ModelState.AddModelError("","Username not found");
+                ModelState.AddModelError("","Username is not found");
                 return View(model);
             }
 
-            var result = await signInManager.PasswordSignInAsync(user, model.Password, isPersistent:false,lockoutOnFailure:false);
+            var result = await signInManager.PasswordSignInAsync(user, model.Password, isPersistent:true,lockoutOnFailure:false);
             if (result.Succeeded)
             {
                 user.LastAuthorization = DateTime.Now;

@@ -4,12 +4,16 @@ namespace WebApplication.Models
 {
     public class SignInViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "This field is required")]
+        [Display(Name = "Username")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "This field is required")]
+        [Display(Name = "Password")]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password))]
         public string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool IsPersistent { get; set; }
     }
 }

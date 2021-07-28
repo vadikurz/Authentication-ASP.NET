@@ -11,6 +11,7 @@
         public static class Admin
         {
             public const string Index = "/admin/index";
+            public const string Delete = "/admin/delete";
         }
 
         public static class Account

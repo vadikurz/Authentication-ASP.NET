@@ -1,31 +1,73 @@
-﻿@using WebApplication.Utils.Constants
+﻿@using System.Runtime.InteropServices
+@using WebApplication.Utils.Constants
 @model WebApplication.Models.SignUpViewModel
 @{ var query = new Dictionary<string, string>()
     {
         [ApplicationCookies.ReturnUrlParameter] = Context.Request.Query[ApplicationCookies.ReturnUrlParameter]
     };
 }
-
-<h1>Registration</h1>
-<a asp-controller="Home" asp-action="Index">Home</a>
-<a asp-controller="Account" asp-action="SignIn">Sign in</a>
-<form asp-controller="Account" asp-action="SignUp" method="post" asp-all-route-data=@query>
-    <div>
-        <label>UserName</label>
-        <input asp-for="UserName" />
-        <span asp-validation-for="UserName"></span>
+<div class="container bg-light col-3 border rounded my-5 ">
+    <div class="col">
+        <div class="row my-3 px-3">
+            <label class="text-center">Registration</label>
+        </div>
+        <form asp-controller="Account" asp-action="SignUp" method="post" asp-all-route-data=@query>
+            <div class="row  my-3 px-3">
+                <div class="col align-items-center">
+                    <div class="row">
+                        <label asp-for="UserName" class="form-label"></label>
+                    </div>
+                    <div class="row">
+                        <input class="form-control" asp-for="UserName" />
+                    </div>
+                    <span class="text-danger" asp-validation-for="UserName"></span>
+                </div>
+            </div>
+            <div class="row  my-3 px-3">
+                <div class="col align-items-center">
+                    <div class="row">
+                        <label asp-for="Email" class="form-label"></label>
+                    </div>
+                    <div class="row">
+                        <input class="form-control" asp-for="Email" />
+                    </div>
+                    <span class="text-danger" asp-validation-for="Email"></span>
+                </div>
+            </div>
+            <div class="row my-3 px-3">
+                <div class="col align-items-center">
+                    <div class="row">
+                        <label asp-for="Password" class="form-label"></label>
+                    </div>
+                    <div class="row">
+                        <input class="form-control" asp-for="Password" />
+                    </div>
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+            </div>
+            <div class="row my-3 px-3">
+                <div class="col align-items-center">
+                    <div class="row">
+                        <label asp-for="ConfirmedPassword" class="form-label"></label>
+                    </div>
+                    <div class="row">
+                        <input class="form-control" asp-for="ConfirmedPassword" />
+                    </div>
+                    <span class="text-danger" asp-validation-for="ConfirmedPassword"></span>
+                </div>
+            </div>
+            <div class="row my-3 px-2">
+                <div class="d-inline">
+                    <button type="submit" class="btn btn-primary"> Sign up</button>
+                    <a asp-controller="Account" asp-action="SignIn" class="btn btn-secondary mx-2">Sign in</a>
+                </div>
+            </div>
+            <div class="row my-3 px-2">
+                <div class="d-inline">
+                    <input asp-for="IsPersistent" type="checkbox" class="form-check-input" />
+                    <label asp-for="IsPersistent" class="form-check-label"></label>
+                </div>
+            </div>
+        </form>
     </div>
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label>Confirm password</label>
-        <input asp-for="ConfirmedPassword" />
-        <span asp-validation-for="ConfirmedPassword"></span>
-    </div>
-    <p>
-        <button type="submit">Sign up</button>
-    </p>
-</form>
+</div>

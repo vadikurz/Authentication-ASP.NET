@@ -5,22 +5,48 @@
        [ApplicationCookies.ReturnUrlParameter] = Context.Request.Query[ApplicationCookies.ReturnUrlParameter]
    };
 }
-<h1>Sign In</h1>
-<a asp-controller ="Home" asp-action="Index">Home</a>
-<a asp-controller="Account" asp-action="SignUp" asp-all-route-data=@query>Sign Up</a>
-<form asp-controller="Account" asp-action="SignIn" method="post" asp-all-route-data =@query>
-    <div asp-validation-summary="All"></div>
-    <div>
-        <label>UserName</label>
-        <input asp-for="UserName" />
-        <span asp-validation-for="UserName"></span>
+
+    <div class="container bg-light col-3 border rounded my-5 ">
+        <div class="col">
+                <div class="row my-3 px-3">
+                    <h1 class="text-center">Sign in</h1>
+                </div>
+                <form asp-controller="Account" asp-action="SignIn" method="post" asp-all-route-data=@query>
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div class="row  my-3 px-3">
+                        <div class="col align-items-center">
+                            <div class="row">
+                                <label asp-for="UserName" class="form-label"></label>
+                            </div>
+                            <div class="row">
+                                <input asp-for="UserName" class="form-control"/>
+                            </div>
+                            <span class="text-danger" asp-validation-for="UserName"></span>
+                        </div>
+                    </div>
+                    <div class="row  my-3 px-3">
+                        <div class="col align-items-center">
+                            <div class="row">
+                                <label asp-for="Password" class="form-label"></label>
+                            </div>
+                            <div class="row">
+                                <input asp-for="Password" class="form-control"/>
+                            </div>
+                            <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+                    </div>
+                    <div class="row my-3 px-2">
+                        <div class="d-inline">
+                            <input asp-for="IsPersistent" type="checkbox"class="form-check-input"/>
+                            <label asp-for="IsPersistent" class="form-check-label"></label>
+                        </div>
+                    </div>
+                    <div class="row my-3 px-2">
+                        <div class="d-inline col-sm">
+                            <button type="submit" class="btn btn-primary"> Sign in</button>
+                            <a asp-controller="Account" asp-action="SignUp" asp-all-route-data=@query class="btn btn-secondary mx-2">Sign up</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
     </div>
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <p>
-        <button type="submit"> Sign in</button>
-    </p>
-</form>

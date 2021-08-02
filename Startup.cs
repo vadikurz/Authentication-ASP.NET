@@ -17,7 +17,7 @@ namespace WebApplication
     {
         IConfiguration Configuration { get; }
 
-        public Startup (IConfiguration configuration)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -37,8 +37,8 @@ namespace WebApplication
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IMapper<User, SelectableUserViewModel>, UserEntityToSelectableUserViewModelMapper>();
-            services.AddSingleton<IMapper<SignUpViewModel, User>, SignUpViewModelToUserEntity>();
-                
+            services.AddSingleton<IMapper<SignUpViewModel, User>, SignUpViewModelToUserEntityMapper>();
+
 
 
             services.AddAuthorization();

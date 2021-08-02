@@ -1,6 +1,6 @@
 ﻿@using WebApplication.Utils.Constants
-@model WebApplication.Models.SignInViewModel
-@{ var query = new Dictionary<string, string>()
+@model SignInViewModel
+@{ var query = new Dictionary<string, string>
    {
        [ApplicationCookies.ReturnUrlParameter] = Context.Request.Query[ApplicationCookies.ReturnUrlParameter]
    };
@@ -37,7 +37,7 @@
                     </div>
                     <div class="row my-3 px-2">
                         <div class="d-inline">
-                            <input asp-for="IsPersistent" type="checkbox"class="form-check-input"/>
+                            <input asp-for="IsPersistent" class="form-check-input"/>
                             <label asp-for="IsPersistent" class="form-check-label"></label>
                         </div>
                     </div>

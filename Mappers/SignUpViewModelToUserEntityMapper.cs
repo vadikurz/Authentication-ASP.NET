@@ -3,10 +3,10 @@ using WebApplication.Models;
 
 namespace WebApplication.Mappers
 {
-    public class SignUpViewModelToUserEntity : IMapper<SignUpViewModel, User>
+    public class SignUpViewModelToUserEntityMapper : IMapper<SignUpViewModel, User>
     {
         public User Map(SignUpViewModel source) =>
-            new ()
+            new()
             {
                 UserName = source.UserName,
                 Email = source.Email

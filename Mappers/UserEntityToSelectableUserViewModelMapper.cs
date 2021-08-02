@@ -3,7 +3,7 @@ using WebApplication.Models;
 
 namespace WebApplication.Mappers
 {
-    public class UserEntityToSelectableUserViewModelMapper : IMapper<User,SelectableUserViewModel>
+    public class UserEntityToSelectableUserViewModelMapper : IMapper<User, SelectableUserViewModel>
     {
         public SelectableUserViewModel Map(User source) =>
             new()
@@ -12,7 +12,8 @@ namespace WebApplication.Mappers
                 Email = source.Email,
                 Id = source.Id,
                 RegisteredAt = source.RegisteredAt,
-                LastAuthorizedAt = source.LastAuthorizedAt
+                LastAuthorizedAt = source.LastAuthorizedAt,
+                IsBaned = source.IsBanned
             };
     }
 }

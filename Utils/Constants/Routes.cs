@@ -12,6 +12,8 @@
         {
             public const string Index = "/admin/index";
             public const string Delete = "/admin/delete";
+            public const string Ban = "/admin/ban";
+            public const string UnBan = "/admin/unban";
         }
 
         public static class Account

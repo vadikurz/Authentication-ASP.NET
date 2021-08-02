@@ -14,12 +14,12 @@ using WebApplication.Utils.Extensions;
 namespace WebApplication.Controllers
 {
     [Authorize]
-    public class AdminController: Controller
+    public class AdminController : Controller
     {
         private readonly UserManager<User> userManager;
         private readonly IMapper<User, SelectableUserViewModel> mapper;
-        
-        public AdminController(UserManager<User> userManager, IMapper<User,SelectableUserViewModel> mapper)
+
+        public AdminController(UserManager<User> userManager, IMapper<User, SelectableUserViewModel> mapper)
         {
             this.userManager = userManager;
             this.mapper = mapper;
@@ -32,20 +32,54 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost(Routes.Admin.Delete)]
-        public IActionResult DeleteUsersAsync(IEnumerable<SelectableUserViewModel> users)
+        public IActionResult DeleteUsers(IEnumerable<SelectableUserViewModel> users)
         {
             users.Where(user => user.IsSelected)
-                 .Select(user=>user.Id)
+                 .Select(user => user.Id)
                  .Select(GetUserById)
                  .NotNull()
                  .ForEach(DeleteUser);
 
-             return Redirect(Routes.Admin.Index);
+            return Redirect(Routes.Admin.Index);
+        }
+
+        [HttpPost(Routes.Admin.Ban)]
+        public IActionResult BanUsers(IEnumerable<SelectableUserViewModel> users)
+        {
+            users.Where(user => user.IsSelected)
+                .Select(user => user.Id)
+                .Select(GetUserById)
+                .NotNull()
+                .ForEach(BanUser);
+            return Redirect(Routes.Admin.Index);
+        }
+
+        [HttpPost(Routes.Admin.UnBan)]
+        public IActionResult UnBanUsers(IEnumerable<SelectableUserViewModel> users)
+        {
+            users.Where(user => user.IsSelected)
+                .Select(user => user.Id)
+                .Select(GetUserById)
+                .NotNull()
+                .ForEach(UnBanUser);
+            return Redirect(Routes.Admin.Index);
         }
 
         private User GetUserById(Guid id) => userManager.FindByIdAsync(id.ToString()).Result;
 
         private void DeleteUser(User user) => userManager.DeleteAsync(user).Wait();
+
+        private void BanUser(User user)
+        {
+            user.IsBanned = true;
+            userManager.UpdateAsync(user).Wait();
+            userManager.UpdateSecurityStampAsync(user);
+        }
+
+        private void UnBanUser(User user)
+        {
+            user.IsBanned = false;
+            userManager.UpdateAsync(user).Wait();
+        }
     }
-   
 }

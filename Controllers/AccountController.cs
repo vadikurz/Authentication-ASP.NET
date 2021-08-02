@@ -12,11 +12,16 @@ namespace WebApplication.Controllers
 {
     public class AccountController : Controller
     {
+        private const string UserNotFoundMessage = "Username is not found";
+        private const string UserBannedMessage = "User is banned"; 
+        private const string IncorrectUserNameOrPassword = " Incorrect username or password";
+
+
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signInManager;
         private readonly IMapper<SignUpViewModel, User> mapper;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IMapper<SignUpViewModel,User> mapper)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IMapper<SignUpViewModel, User> mapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -63,26 +68,35 @@ namespace WebApplication.Controllers
         [HttpPost(Routes.Account.SignIn)]
         public async Task<IActionResult> SignInAsync([FromForm] SignInViewModel model, [FromQuery(Name = ApplicationCookies.ReturnUrlParameter)] string returnUrl)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await userManager.FindByNameAsync(model.UserName);
-                if (user is null)
-                {
-                    ModelState.AddModelError(string.Empty, "Username is not found");
-                    return View(model);
-                }
-                var result = await signInManager.PasswordSignInAsync(user, model.Password, model.IsPersistent, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    user.LastAuthorizedAt = DateTime.Now;
-                    var editResult = await userManager.UpdateAsync(user);
-                    if (editResult.Succeeded)
-                    {
-                        return RedirectToUrlOrDefault(returnUrl);
-                    }
-                }
+                return View(model);
             }
-            return View(model);
+
+            var user = await userManager.FindByNameAsync(model.UserName);
+            if (user is null)
+            {
+                ModelState.AddModelError(string.Empty, UserNotFoundMessage);
+                return View(model);
+            }
+
+            if (user.IsBanned)
+            {
+                ModelState.AddModelError(string.Empty, UserBannedMessage);
+                return View(model);
+            }
+
+            var result = await signInManager.PasswordSignInAsync(user, model.Password, model.IsPersistent, lockoutOnFailure: false);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, IncorrectUserNameOrPassword);
+                return View(model);
+            }
+
+            user.LastAuthorizedAt = DateTime.Now;
+            await userManager.UpdateAsync(user);
+            return RedirectToUrlOrDefault(returnUrl);
+
         }
 
         [Authorize]

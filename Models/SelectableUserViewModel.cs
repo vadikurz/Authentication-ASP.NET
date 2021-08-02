@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApplication.Data.Entities;
 
 namespace WebApplication.Models
 {
@@ -17,6 +13,8 @@ namespace WebApplication.Models
         public DateTime RegisteredAt { get; set; }
 
         public DateTime LastAuthorizedAt { get; set; }
+
+        public bool IsBaned { get; set; }
 
         public bool IsSelected { get; set; }
 

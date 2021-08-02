@@ -15,5 +15,6 @@ namespace WebApplication.Models
 
         [Display(Name = "Remember me?")]
         public bool IsPersistent { get; set; }
+        
     }
 }

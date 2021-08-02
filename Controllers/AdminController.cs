@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WebApplication.Data;
 using WebApplication.Data.Entities;
 using WebApplication.Mappers;
 using WebApplication.Models;
@@ -27,14 +24,15 @@ namespace WebApplication.Controllers
             this.userManager = userManager;
             this.mapper = mapper;
         }
+
         [HttpGet(Routes.Admin.Index)]
         public IActionResult Index()
         {
-            return View(userManager.Users.Select(mapper.Map).ToList());
+            return View(userManager.Users.AsEnumerable().Select(mapper.Map).ToList());
         }
 
         [HttpPost(Routes.Admin.Delete)]
-        public IActionResult DeleteUserAsync(IEnumerable<SelectableUserViewModel> users)
+        public IActionResult DeleteUsersAsync(IEnumerable<SelectableUserViewModel> users)
         {
             users.Where(user => user.IsSelected)
                  .Select(user=>user.Id)
@@ -46,6 +44,7 @@ namespace WebApplication.Controllers
         }
 
         private User GetUserById(Guid id) => userManager.FindByIdAsync(id.ToString()).Result;
+
         private void DeleteUser(User user) => userManager.DeleteAsync(user).Wait();
     }
    

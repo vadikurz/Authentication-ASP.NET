@@ -17,9 +17,9 @@
         public static class Account
         {
             public const string Index = "/account/index";
-            public const string SignIn = "/account/log-in";
+            public const string SignIn = "/account/sign-in";
             public const string AccessDenied = "/account/access-denied";
-            public const string SignOut = "/account/log-out";
+            public const string SignOut = "/account/sign-out";
             public const string SignUp = "/account/sign-up";
         }
     }

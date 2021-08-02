@@ -37,6 +37,7 @@ namespace WebApplication
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IMapper<User, SelectableUserViewModel>, UserEntityToSelectableUserViewModelMapper>();
+            services.AddSingleton<IMapper<SignUpViewModel, User>, SignUpViewModelToUserEntity>();
                 
 
 

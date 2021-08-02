@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication.Mappers
 {
-    public interface IMapper<TSource, TDestination>
+    public interface IMapper< in TSource, out TDestination>
     {
         public TDestination Map(TSource source);
     }

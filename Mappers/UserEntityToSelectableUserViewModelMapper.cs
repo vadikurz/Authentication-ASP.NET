@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApplication.Data.Entities;
+﻿using WebApplication.Data.Entities;
 using WebApplication.Models;
 
 namespace WebApplication.Mappers
@@ -15,8 +11,8 @@ namespace WebApplication.Mappers
                 UserName = source.UserName,
                 Email = source.Email,
                 Id = source.Id,
-                LastAuthorization = source.LastAuthorization,
-                RegistrationDate = source.RegistrationDate
+                RegisteredAt = source.RegisteredAt,
+                LastAuthorizedAt = source.LastAuthorizedAt
             };
     }
 }

@@ -73,7 +73,7 @@ namespace WebApplication.Controllers
         {
             user.IsBanned = true;
             userManager.UpdateAsync(user).Wait();
-            userManager.UpdateSecurityStampAsync(user);
+            userManager.UpdateSecurityStampAsync(user).Wait();
         }
 
         private void UnBanUser(User user)

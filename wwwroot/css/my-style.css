@@ -1,9 +1,12 @@
 ﻿body,html {
     height: 100%;
 }
-.flex-center{
+.flex-center {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
 }
+.multiselectable {
+}
+

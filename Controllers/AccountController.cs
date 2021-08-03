@@ -13,7 +13,7 @@ namespace WebApplication.Controllers
     public class AccountController : Controller
     {
         private const string UserNotFoundMessage = "Username is not found";
-        private const string UserBannedMessage = "User is banned"; 
+        private const string UserBannedMessage = "User is banned";
         private const string IncorrectUserNameOrPassword = " Incorrect username or password";
 
 

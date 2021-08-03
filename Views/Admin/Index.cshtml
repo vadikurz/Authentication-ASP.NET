@@ -1,4 +1,13 @@
 ﻿@model IList<WebApplication.Models.SelectableUserViewModel>
+
+
+<script>
+    function selectAll(checked) {
+        const checkboxes = [...document.getElementsByClassName('multiselectable')];
+        checkboxes.forEach(element => element.checked = checked);
+    }
+</script>
+
 <div class="col">
     <div class="row my-3 px-3">
         <div class="col">
@@ -13,29 +22,29 @@
     <div class="row my-3 px-3">
         <form method="post">
             <table class="table">
-                <tr><th>Select</th><th>Status</th><th>Username</th><th>Email</th><th>Id</th><th>Registration date</th><th>Last login date</th></tr>
+                <tr><td><input type="checkbox" id="one" onclick="selectAll(this.checked)" /></td><th>Status</th><th>Username</th><th>Email</th><th>Id</th><th>Registration date</th><th>Last login date</th></tr>
                 @for (var i = 0; i < Model.Count; i++)
                 {
-            <tr>
-                <td>
-                    <input asp-for="@Model[i].IsSelected" />
-                </td>
-                <td>@(Model[i].IsBaned ? "banned" : "active")</td>
-                <td>@Model[i].UserName</td>
-                <td>@Model[i].Email</td>
-                <td>
-                    <input type="hidden" asp-for="@Model[i].Id" />
-                    @Model[i].Id
-                </td>
-                <td>@Model[i].RegisteredAt</td>
-                <td>@Model[i].LastAuthorizedAt</td>
-            </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="@Model[i].IsSelected" class="multiselectable" />
+                        </td>
+                        <td>@(Model[i].IsBaned ? "banned" : "active")</td>
+                        <td>@Model[i].UserName</td>
+                        <td>@Model[i].Email</td>
+                        <td>
+                            <input type="hidden" asp-for="@Model[i].Id" />
+                            @Model[i].Id
+                        </td>
+                        <td>@Model[i].RegisteredAt</td>
+                        <td>@Model[i].LastAuthorizedAt</td>
+                    </tr>
                 }
             </table>
             <div class="d-inline">
                 <button asp-controller="Admin" asp-action="DeleteUsers" type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    <button asp-controller="Admin" asp-action="BanUsers" type="submit" class="btn btn-sm btn-danger">Ban</button>
-                    <button asp-controller="Admin" asp-action="UnBanUsers" type="submit" class="btn btn-sm btn-danger">UnBan</button>
+                <button asp-controller="Admin" asp-action="BanUsers" type="submit" class="btn btn-sm btn-warning">Ban</button>
+                <button asp-controller="Admin" asp-action="UnBanUsers" type="submit" class="btn btn-sm btn-success">Unban</button>
             </div>
         </form>
     </div>
